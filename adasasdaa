@@ -1,97 +1,98 @@
---// This script uses the external Consistt/Ui library to create a graphical user interface.
---// It includes examples of a watermark, notifications, a main window with a tab, and
---// various components like toggles, buttons, text boxes, and sliders.
+--// ORBIT HUB v2.1 UI Script
+--// Made by ! VIPER and JMAO
 
---// Load the UI library from the provided URL.
+-- Load external UI library
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Consistt/Ui/main/UnLeaked"))()
 
---// Set the user's rank for the watermark.
+-- Rank + watermark
 library.rank = "OWNER"
-
---// Create a watermark at the top of the screen.
---// It displays a title, version, username, and rank.
-local Wm = library:Watermark("ORBIT  -  HUB | v" .. library.version .. " | " .. library:GetUsername() .. " | rank: " .. library.rank)
-
---// Add a sub-watermark to display the FPS.
+local Wm = library:Watermark("ORBIT - HUB | v" .. library.version .. " | " .. library:GetUsername() .. " | rank: " .. library.rank)
 local FpsWm = Wm:AddWatermark("fps: " .. library.fps)
 
---// Use a coroutine to update the FPS watermark every 0.75 seconds.
 coroutine.wrap(function()
-    while wait(.75) do
+    while task.wait(0.75) do
         FpsWm:Text("fps: " .. library.fps)
     end
 end)()
 
---// Initialize the notification system.
+-- Notifications
 local Notif = library:InitNotifications()
+Notif:Notify("Loading ORBIT - HUB, please be patient.", 5, "information")
 
---// Show a loading notification when the script starts.
-local LoadingXSX = Notif:Notify("Loading ORBIT - HUB, please be patient.", 5, "information")
-
---// Set the main title for the UI window.
-library.title = "ORBIT  -  HUB"
-
---// Display the introduction animation for the library.
+library.title = "ORBIT - HUB"
 library:Introduction()
-wait(1)
+task.wait(1)
 
---// Initialize the main UI window.
+-- Init window
 local Init = library:Init()
 
---// Create a new tab named "Example tab" inside the main window.
-local Tab1 = Init:NewTab("Example tab")
+-------------------------------------------------
+-- Tabs
+-------------------------------------------------
+local MainTab = Init:NewTab("⛑️ - Main")
+local HelpWinTab = Init:NewTab("🏆 - Help win")
+local BringTab = Init:NewTab("🪵 - Bring stuff")
+local CombatTab = Init:NewTab("⚔️ - Combat")
+local SettingsTab = Init:NewTab("⚙️ - Settings")
 
---// Create a section within the tab for organizing components.
-local Section1 = Tab1:NewSection("Example Components")
-
---// Add a simple text label.
-local Label1 = Tab1:NewLabel("Example label", "left")
-
---// Create a toggle with a keybind (RightControl) to turn it on/off.
---// The function passed to NewToggle will run whenever the toggle's state changes.
-local Toggle1 = Tab1:NewToggle("Example toggle", false, function(value)
-    local vers = value and "on" or "off"
-    print("one " .. vers)
-end):AddKeybind(Enum.KeyCode.RightControl)
-
---// Create another toggle with a different keybind (LeftControl).
-local Toggle2 = Tab1:NewToggle("Toggle", false, function(value)
-    local vers = value and "on" or "off"
-    print("two " .. vers)
-end):AddKeybind(Enum.KeyCode.LeftControl)
-
---// Add a button that prints "one" when clicked.
-local Button1 = Tab1:NewButton("Button", function()
-    print("one")
+-------------------------------------------------
+-- ⛑️ Main
+-------------------------------------------------
+MainTab:NewLabel("INFO - Made by ! VIPER and JMAO", "left")
+MainTab:NewLabel("Version 2.1", "left")
+MainTab:NewButton("Join Discord (placeholder)", function()
+    print("Discord link clicked")
 end)
 
---// Create a keybind component that lets the user change the keybind.
-local Keybind1 = Tab1:NewKeybind("Keybind 1", Enum.KeyCode.RightAlt, function(key)
+-------------------------------------------------
+-- 🏆 Help win
+-------------------------------------------------
+HelpWinTab:NewToggle("Auto plant saplings", false, function(v) print("Auto plant "..tostring(v)) end)
+HelpWinTab:NewToggle("Auto get childs", false, function(v) print("Auto childs "..tostring(v)) end)
+HelpWinTab:NewToggle("Auto make beds", false, function(v) print("Auto beds "..tostring(v)) end)
+HelpWinTab:NewToggle("Keep fire alive", false, function(v) print("Fire alive "..tostring(v)) end)
+HelpWinTab:NewToggle("Auto eat", false, function(v) print("Auto eat "..tostring(v)) end)
+
+-------------------------------------------------
+-- 🪵 Bring stuff
+-------------------------------------------------
+BringTab:NewSelector("Bring Items", "choose", {"Workbench","Campfire"}, function(opt)
+    print("Bring item: "..opt)
+end)
+
+BringTab:NewToggle("Bring Fuel (logs, coal, etc)", false, function(v) print("Fuel "..tostring(v)) end)
+BringTab:NewToggle("Bring Lost Child (beta)", false, function(v) print("Lost child "..tostring(v)) end)
+BringTab:NewToggle("Bring Weapons", false, function(v) print("Weapons "..tostring(v)) end)
+
+BringTab:NewSelector("Bring Stuff", "choose", {"All items"}, function(opt)
+    print("Bring stuff: "..opt)
+end)
+
+-------------------------------------------------
+-- ⚔️ Combat
+-------------------------------------------------
+CombatTab:NewSlider("Kill Aura Range", "studs", true, "/", {min = 1, max = 50, default = 10}, function(val)
+    print("Kill aura studs = "..val)
+end)
+
+CombatTab:NewToggle("Anti-Die (TP to campfire)", false, function(v) print("Anti die "..tostring(v)) end)
+CombatTab:NewToggle("Auto Heal (self)", false, function(v) print("Auto heal self "..tostring(v)) end)
+CombatTab:NewToggle("Auto Heal (teammate)", false, function(v) print("Auto heal team "..tostring(v)) end)
+
+-------------------------------------------------
+-- ⚙️ Settings
+-------------------------------------------------
+SettingsTab:NewSelector("Theme", "select", {"Blue - Water", "Red - Fire"}, function(opt)
+    print("Theme changed to "..opt)
+end)
+
+SettingsTab:NewKeybind("Menu Toggle Key", Enum.KeyCode.RightControl, function(key)
     Init:UpdateKeybind(Enum.KeyCode[key])
 end)
 
---// Add three text boxes with different sizes.
-local Textbox1 = Tab1:NewTextbox("Text box 1 [auto scales // small]", "", "1", "all", "small", true, false, function(val)
-    print(val)
-end)
+SettingsTab:NewLabel("Credits: ! VIPER & JMAO", "left")
 
-local Textbox2 = Tab1:NewTextbox("Text box 2 [medium]", "", "2", "all", "medium", true, false, function(val)
-    print(val)
-end)
-
-local Textbox3 = Tab1:NewTextbox("Text box 3 [large]", "", "3", "all", "large", true, false, function(val)
-    print(val)
-end)
-
---// Add a selector component with predefined options.
-local Selector1 = Tab1:NewSelector("Selector 1", "bungie", {"fg", "fge", "fg", "fg"}, function(d)
-    print(d)
-end):AddOption("fge")
-
---// Add a slider component with a minimum, maximum, and default value.
-local Slider1 = Tab1:NewSlider("Slider 1", "", true, "/", {min = 1, max = 100, default = 20}, function(value)
-    print(value)
-end)
-
---// Show a success notification when the UI is fully loaded.
-local FinishedLoading = Notif:Notify("Loaded ORBUT  -   HUB", 4, "success")
+-------------------------------------------------
+-- Finished
+-------------------------------------------------
+Notif:Notify("Loaded ORBIT - HUB v2.1", 4, "success")
